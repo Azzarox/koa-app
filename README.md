@@ -1,7 +1,7 @@
 
 # Koa App API
 
-A RESTful API built with **Koa.js**, featuring **JWT authentication**, **PostgreSQL**, user–book relationships, database migrations, seeds, and Docker-based environments.
+A RESTful API built with **Koa.js** and **Knex.js** using PostgreSQL, featuring JWT authentication, user–book relationships, unit and integration tests and Docker for the database.
 
 ---
 
@@ -45,6 +45,17 @@ Your API will be available at `http://localhost:{PORT}/v1`.
 
 ---
 
+## Tech Stack
+
+* Typescript
+* Koa.js
+* Knex.js
+* PostgreSQL
+* Jest
+* Docker
+
+---
+
 ## Project Structure
 
 ```
@@ -57,7 +68,7 @@ Your API will be available at `http://localhost:{PORT}/v1`.
 │  ├─ /services             # Business logic and utilities
 ├─ /migrations              # Database migration scripts
 ├─ /seeds                   # Database seed scripts
-├─ /tests                   # Unit and integration tests
+├─ /tests                   # Unit and integration test setup
 ├─ .env.example             # Example environment variables for development
 ├─ .env.test.example        # Example environment variables for testing
 ├─ docker-compose.yml
