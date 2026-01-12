@@ -1,8 +1,8 @@
 openapi: 3.0.0
 
 info:
-  title: Auth API
-  description: Authentication endpoints for the Koa application
+  title: Auth & Books API
+  description: Authentication and Books endpoints for the Koa application
   version: 1.0.0
 
 servers:
@@ -11,8 +11,58 @@ servers:
 tags:
   - name: Auth
     description: Authentication endpoints
+  - name: Books
+    description: Books endpoints
 
 paths:
+  # ----------------- AUTH -----------------
+  /v1/auth/register:
+    post:
+      tags:
+        - Auth
+      summary: Register user
+      description: Creates a new user account. You can pick the role (User, Author). Mind you that some further actions are restricted depending on the role your user has.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterUserPayload"
+            examples:
+              userRole:
+                summary: Register as USER
+                value:
+                  username: test123
+                  password: test123
+                  confirmPassword: test123
+                  role: user
+              authorRole:
+                summary: Register as AUTHOR
+                value:
+                  username: author123
+                  password: author123
+                  confirmPassword: author123
+                  role: author
+      responses:
+        "201":
+          description: Successfully registered
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RegisterSuccessResponse"
+        "400":
+          description: Invalid request payload
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: User already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse"
+
   /v1/auth/login:
     post:
       tags:
@@ -24,52 +74,226 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/LoginUserPayload'
-            example:
-              username: test123
-              password: test123
+              $ref: "#/components/schemas/LoginUserPayload"
+            examples:
+              userRole:
+                summary: Login as USER
+                value:
+                  username: test123
+                  password: test123
+              authorRole:
+                summary: Login as AUTHOR
+                value:
+                  username: author123
+                  password: author123
       responses:
-        '201':
+        "201":
           description: Successfully logged in
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LoginSuccessResponse'
-        '400':
+                $ref: "#/components/schemas/LoginSuccessResponse"
+        "400":
           description: Invalid request payload
-        '401':
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
           description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse"
 
-  /v1/auth/register:
+  
+
+  # ----------------- BOOKS -----------------
+  /v1/books/all:
+    get:
+      tags:
+        - Books
+      summary: Get all books
+      description: Returns all books in the system (admin-level or public)
+      security:
+        - BearerAuth: []
+      responses:
+        "201":
+          description: Successfully retrieved all books
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponse"
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Successfully retrieved all books
+                      data:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/Book"
+
+  /v1/books:
+    get:
+      tags:
+        - Books
+      summary: Get books for the current user
+      security:
+        - BearerAuth: []
+      responses:
+        "201":
+          description: Successfully retrieved user books
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponse"
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Successfully retrieved your books
+                      data:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/Book"
+
     post:
       tags:
-        - Auth
-      summary: Register user
-      description: Creates a new user account
+        - Books
+      summary: Create a book
+      security:
+        - BearerAuth: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RegisterUserPayload'
-            example:
-              username: test123
-              password: test123
-              confirmPassword: test123
+              $ref: "#/components/schemas/CreateBookPayload"
       responses:
-        '201':
-          description: Successfully registered!
+        "200":
+          description: Successfully created book
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RegisterSuccessResponse'
-        '400':
-          description: Invalid request payload
-        '409':
-          description: User already exists
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponse"
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Successfully created book
+                      data:
+                        $ref: "#/components/schemas/Book"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /v1/books/{id}:
+    get:
+      tags:
+        - Books
+      summary: Get book by ID
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "201":
+          description: Successfully retrieved book
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponse"
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Successfully retrieved book
+                      data:
+                        $ref: "#/components/schemas/Book"
+
+    put:
+      tags:
+        - Books
+      summary: Update a book
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateBookPayload"
+      responses:
+        "200":
+          description: Successfully updated book
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponse"
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Successfully updated book
+                      data:
+                        $ref: "#/components/schemas/Book"
+
+    delete:
+      tags:
+        - Books
+      summary: Delete a book
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "201":
+          description: Successfully deleted book
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponse"
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Successfully deleted book
+                      data:
+                        $ref: "#/components/schemas/Book"
 
 components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
   schemas:
+    # ------------- AUTH SCHEMAS -------------
     LoginUserPayload:
       type: object
       required:
@@ -132,4 +356,94 @@ components:
           example: Successfully registered!
         data:
           type: object
-          description: Created user object
+          description: Created user object format
+
+    # ------------- BOOK SCHEMAS -------------
+    Book:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: The Great Gatsby
+        author:
+          type: string
+          example: F. Scott Fitzgerald
+        created_at:
+          type: string
+          format: date-time
+          example: "2026-01-12T12:00:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2026-01-12T12:00:00Z"
+
+    CreateBookPayload:
+      type: object
+      required:
+        - title
+        - author
+      properties:
+        title:
+          type: string
+          example: The Great Gatsby
+        author:
+          type: string
+          example: F. Scott Fitzgerald
+
+    UpdateBookPayload:
+      type: object
+      properties:
+        title:
+          type: string
+          example: The Great Gatsby
+        author:
+          type: string
+          example: F. Scott Fitzgerald
+
+    # ------------- GENERIC RESPONSES -------------
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        status:
+          type: integer
+          example: 201
+        message:
+          type: string
+          example: Success
+        data:
+          type: object
+
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        status:
+          type: integer
+          example: 400
+        message:
+          type: string
+          example: Validation error
+        errors:
+          type: object
+          additionalProperties: true
+
+    FailResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        status:
+          type: integer
+          example: 409
+        message:
+          type: string
+          example: Action failed
