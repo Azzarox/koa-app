@@ -6,6 +6,7 @@ import { bodyParser } from '@koa/bodyparser';
 import passport from './config/authConfig';
 import koaPinoLogger from 'koa-pino-logger';
 import logger from './config/logger';
+import { swaggerDocsRouter } from './config/swagger';
 
 const app = new Koa();
     
@@ -13,6 +14,7 @@ app.use(koaPinoLogger({logger}));
 app.use(json());
 app.use(bodyParser());
 app.use(passport.initialize());
+app.use(swaggerDocsRouter.routes());
 app.use(router.routes()).use(router.allowedMethods());
 
 export default app;

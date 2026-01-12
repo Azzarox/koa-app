@@ -1,0 +1,135 @@
+openapi: 3.0.0
+
+info:
+  title: Auth API
+  description: Authentication endpoints for the Koa application
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3000
+
+tags:
+  - name: Auth
+    description: Authentication endpoints
+
+paths:
+  /v1/auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Login user
+      description: Authenticates a user and returns an access token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginUserPayload'
+            example:
+              username: test123
+              password: test123
+      responses:
+        '201':
+          description: Successfully logged in
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginSuccessResponse'
+        '400':
+          description: Invalid request payload
+        '401':
+          description: Invalid credentials
+
+  /v1/auth/register:
+    post:
+      tags:
+        - Auth
+      summary: Register user
+      description: Creates a new user account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterUserPayload'
+            example:
+              username: test123
+              password: test123
+              confirmPassword: test123
+      responses:
+        '201':
+          description: Successfully registered!
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterSuccessResponse'
+        '400':
+          description: Invalid request payload
+        '409':
+          description: User already exists
+
+components:
+  schemas:
+    LoginUserPayload:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+          example: user123
+        password:
+          type: string
+
+    RegisterUserPayload:
+      type: object
+      required:
+        - username
+        - password
+        - confirmPassword
+      properties:
+        username:
+          type: string
+          example: test123
+        password:
+          type: string
+          example: test123
+        confirmPassword:
+          type: string
+          example: test123
+        role:
+          type: string
+          enum:
+            - USER
+            - AUTHOR
+          example: USER
+
+    LoginSuccessResponse:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          example: 201
+        message:
+          type: string
+          example: Successfully logged in!
+        data:
+          type: object
+          properties:
+            accessToken:
+              type: string
+              example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+    RegisterSuccessResponse:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          example: 201
+        message:
+          type: string
+          example: Successfully registered!
+        data:
+          type: object
+          description: Created user object
