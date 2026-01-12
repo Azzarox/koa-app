@@ -2,5 +2,5 @@ import app from './app';
 import { config } from '../config';
 
 app.listen(config.PORT, () => {
-    console.log('Server is running! Listening ...');
+    console.log(`Server is running! Listening on PORT ${config.PORT}...`);
 });

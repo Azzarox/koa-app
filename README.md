@@ -146,38 +146,35 @@ The project uses **PostgreSQL databases running inside Docker containers**. Ther
 ## API Endpoints
 
 Base URL: `/v1`
+Swagger UI is available at: `http://localhost:{PORT}/v1/docs`
 
-**Note:** The term *"selected"* refers to the resource identified by the `:id` parameter.
+**Note:** The term *"selected"* refers to the resource identified by the `:id` parameter. All endpoints requiring authentication use **Bearer JWT**.
 
 ### Authentication
 
-* `POST /v1/auth/register` – Register a new user.
-* `POST /v1/auth/login` – Authenticate a user and return a JWT access token.
+| Method | Endpoint            | Description                                       |
+| ------ | ------------------- | ------------------------------------------------- |
+| POST   | `/v1/auth/register` | Register a new user (roles: USER, AUTHOR)         |
+| POST   | `/v1/auth/login`    | Authenticate a user and return a JWT access token |
 
 ### Books
 
-* `GET /v1/books/all` – Retrieve all books.
-* `GET /v1/books/:id` – Retrieve a selected book.
-* `GET /v1/books` – Retrieve books owned by the currently authenticated user.
-* `POST /v1/books` – Create a new book.
-* `PUT /v1/books/:id` – Update a selected book.
-* `DELETE /v1/books/:id` – Delete a selected book.
+| Method | Endpoint        | Description                              |
+| ------ | --------------- | ---------------------------------------- |
+| GET    | `/v1/books/all` | Retrieve all books (admin/public)        |
+| GET    | `/v1/books/:id` | Retrieve a selected book                 |
+| GET    | `/v1/books`     | Retrieve books owned by the current user |
+| POST   | `/v1/books`     | Create a new book                        |
+| PUT    | `/v1/books/:id` | Update a selected book                   |
+| DELETE | `/v1/books/:id` | Delete a selected book                   |
 
 ### Users
 
-* `GET /v1/users/:id/books` – Retrieve all books for a selected user.
-* `POST /v1/users/books/:id` – Add a selected book to the currently authenticated user.
-* `DELETE /v1/users/books/:id` – Remove a selected book from the currently authenticated user.
-* `POST /v1/users/:userId/books/:bookId` – Add any selected book to any selected user.
-* `DELETE /v1/users/:userId/books/:bookId` – Remove any selected book from any selected user.
-
----
-
-## Postman
-
-A Postman collection is available for API testing:
-[Postman API Overview](https://www.postman.com/nikolabaikushev-9707178/koa-app/overview)
-
-**Note:** A Postman account is required to send requests. PORT is hardcoded to 5173, you can change that to your liking.
-
+| Method | Endpoint                          | Description                                                  |
+| ------ | --------------------------------- | ------------------------------------------------------------ |
+| GET    | `/v1/users/:id/books`             | Retrieve all books for a selected user                       |
+| POST   | `/v1/users/books/:id`             | Add a selected book to the currently authenticated user      |
+| DELETE | `/v1/users/books/:id`             | Remove a selected book from the currently authenticated user |
+| POST   | `/v1/users/:userId/books/:bookId` | Add any selected book to any selected user                   |
+| DELETE | `/v1/users/:userId/books/:bookId` | Remove any selected book from any selected user              |
 ---
