@@ -3,6 +3,8 @@
 
 A RESTful API built with **Koa.js** and **Knex.js** using PostgreSQL, featuring JWT authentication, user–book relationships, unit and integration tests and Docker for the database.
 
+[Documentation](https://book-management-api-i6ks.onrender.com)
+
 ---
 
 ## Requirements
