@@ -9,6 +9,8 @@ servers:
   - url: http://localhost:3000
 
 tags:
+  - name: Health
+    description: Health check endpoint
   - name: Auth
     description: Authentication endpoints
   - name: Books
@@ -17,6 +19,20 @@ tags:
     description: User-related endpoints for managing books
 
 paths:
+  /ping:
+      get:
+          tags:
+              - Health
+          summary: Health check
+          description: Check if the API is running
+          responses:
+              '200':
+                  description: API is healthy
+                  content:
+                      application/json:
+                          example:
+                              status: 200
+                              message: 'success'
   # ----------------- AUTH -----------------
   /v1/auth/register:
     post:
