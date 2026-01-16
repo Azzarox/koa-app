@@ -1,19 +1,15 @@
-
 import knex from 'knex';
-import dotenv from 'dotenv';
 import { config } from '../../config';
 
-dotenv.config();
+const isProd = process.env.NODE_ENV === 'production';
 
 const setup = {
     client: 'pg',
     connection: {
-        host: config.POSTGRES_HOST,
-        port: Number(config.POSTGRES_DB_PORT),
-        user: config.POSTGRES_USER,
-        password: config.POSTGRES_PASSWORD,
-        database: config.POSTGRES_DB,
-    }
+        connectionString: config.DATABASE_URL,
+        ...(isProd && { ssl: { rejectUnauthorized: false } }),
+    },
 };
+
 export const knexSetup = setup;
 export const db = knex(setup);

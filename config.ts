@@ -14,6 +14,7 @@ const envSchema = z.object({
     POSTGRES_HOST: z.string().nonempty('Cannot be empty!'),
     POSTGRES_DB: z.string().nonempty('Cannot be empty!'),
     POSTGRES_DB_PORT: z.string().nonempty('Cannot be empty!'),
+    DATABASE_URL: z.string().optional()
 });
 
 type ConfigData = z.infer<typeof envSchema>;
@@ -24,6 +25,11 @@ if (!env.success) {
     process.exit(1);
 }
 
+const getDatabaseUrl = (env: z.infer<typeof envSchema>) => {
+    if (env.DATABASE_URL) return env.DATABASE_URL;
+    return `postgres://${env.POSTGRES_USER}:${env.POSTGRES_PASSWORD}@${env.POSTGRES_HOST}:${env.POSTGRES_DB_PORT}/${env.POSTGRES_DB}`;
+};
+
 export const config: ConfigData = {
     PORT: env.data.PORT,
     SECRET: env.data.SECRET,
@@ -32,4 +38,5 @@ export const config: ConfigData = {
     POSTGRES_HOST: env.data.POSTGRES_HOST,
     POSTGRES_DB: env.data.POSTGRES_DB,
     POSTGRES_DB_PORT: env.data.POSTGRES_DB_PORT,
+    DATABASE_URL: getDatabaseUrl(env.data)
 };
