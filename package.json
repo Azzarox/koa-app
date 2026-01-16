@@ -8,10 +8,12 @@
   "scripts": {
     "start": "NODE_ENV=development nodemon --exec ts-node src/server.ts",
     "start:prod": "NODE_ENV=production node dist/src/server.js",
+    "build:prod": "tsc -b && cp swagger.yml dist/ && npm run migrations:prod",
     "build": "tsc -b && cp swagger.yml dist/",
     "lint": "eslint . --ext .ts --fix",
     "migrations:make": "knex migrate:make",
     "migrations": "knex migrate:latest",
+    "migrations:prod":"NODE_ENV=production knex migrate:latest --knexfile knexfile.js",
     "seeds:make": "knex seed:make",
     "seeds": "knex seed:run",
     "test": "NODE_ENV=test jest --no-coverage --runInBand --detectOpenHandles",
