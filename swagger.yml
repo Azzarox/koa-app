@@ -35,7 +35,7 @@ paths:
                               status: 200
                               message: 'success'
   # ----------------- AUTH -----------------
-  /v1/auth/register:
+  /auth/register:
     post:
       tags:
         - Auth
@@ -82,7 +82,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/FailResponse"
 
-  /v1/auth/login:
+  /auth/login:
     post:
       tags:
         - Auth
@@ -126,7 +126,7 @@ paths:
                 $ref: "#/components/schemas/FailResponse"
 
   # ----------------- BOOKS -----------------
-  /v1/books/all:
+  /books/all:
     get:
       tags:
         - Books
@@ -151,7 +151,7 @@ paths:
                         items:
                           $ref: "#/components/schemas/Book"
 
-  /v1/books:
+  /books:
     get:
       tags:
         - Books
@@ -210,7 +210,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
-  /v1/books/{id}:
+  /books/{id}:
     get:
       tags:
         - Books
@@ -302,7 +302,7 @@ paths:
                         $ref: "#/components/schemas/Book"
 
   # ----------------- USER-BOOKS -----------------
-  /v1/users/{id}/books:
+  /users/{id}/books:
     get:
       tags:
         - Users
@@ -334,7 +334,7 @@ paths:
                         items:
                           $ref: "#/components/schemas/Book"
 
-  /v1/users/books/{id}:
+  /users/books/{id}:
     post:
       tags:
         - Users
@@ -391,7 +391,7 @@ paths:
                       data:
                         type: object
 
-  /v1/users/{userId}/books/{bookId}:
+  /users/{userId}/books/{bookId}:
     post:
       tags:
         - Users
